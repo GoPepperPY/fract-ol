@@ -5,39 +5,35 @@
 #                                                     +:+ +:+         +:+      #
 #    By: goda-sil <goda-sil@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/04/26 21:04:50 by goda-sil          #+#    #+#              #
-#    Updated: 2023/05/09 21:17:01 by goda-sil         ###   ########.fr        #
+#    Created: 2023/05/09 18:12:20 by goda-sil          #+#    #+#              #
+#    Updated: 2023/05/09 18:50:36 by goda-sil         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = fractol
+NAME = functions.a
+
+SRCS = string_length.c string_compare.c
 
 CC = cc
+RM = rm -f
+CFLAGS = -Wall -Wextra -Werror
+AR = ar rcs
 
-CFLAGS = -g -Wall -Werror -Wextra
-MLXFLAGS = -L../libraries/minilibx -lmlx -lX11 -lXext -lm -lbsd
-FUNCTIONS = ./functions/functions.a
+SRC_OBJS = $(SRCS:.c=.o)
 
-SOURCE = fractol.c mandelbrot.c julia.c complex_math.c painter.c hooks.c
+.c.o:
+	@${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
 
-OBJECT = $(SOURCE:.c=.o)
-
-#Rules:
 all: $(NAME)
 
-$(FUNCTIONS):
-		$(MAKE) -C ./functions
+$(NAME): $(SRC_OBJS)
+	@$(AR) $(NAME) $(SRC_OBJS)
 
-$(NAME):$(OBJECT) $(FUNCTIONS)
-		$(MAKE) --no-print-directory -C ../libraries/minilibx
-		$(CC) $(CFLAGS) $(OBJECT) $(MLXFLAGS) $(FUNCTIONS) -o $(NAME)
+clean:
+	@$(RM) $(SRC_OBJS)
 
-c:
-		$(MAKE) clean -C ./functions
-		rm -rf $(SOURCE:.c=.o)
+fclean:
+	@$(RM) $(SRC_OBJS)
+	@$(RM) $(NAME)
 
-f: 		c
-		$(MAKE) fclean -C ./functions
-		rm -rf $(NAME)
-
-r: f all
+re: fclean all
